@@ -1,0 +1,59 @@
+#iframeContainer {
+    top: 40%;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 50px);
+  }
+  
+  #contentFrame {
+    flex-grow: 1;
+    border: none;
+  }
+  
+  .btn-secundary {
+  
+    background-color: rgba(255, 0, 0, 0.757);
+  }
+  
+  .btn-primary {
+    background-color: rgba(0, 0, 255, 0.702);
+  }
+  
+  .new {
+    position: relative;
+    float: right;
+    height: 43px;
+    color: rgb(0, 105, 128);
+  }
+  
+  
+  #iframeContainer {
+    width: 100%;
+  
+  }
+  
+  #iframeContainer .iframe {
+    width: 100%;
+    border: none;
+  }
+  
+  
+  /*MODAL FORMULARIO*/
+  
+  .btn-close {
+    background-color: blue;
+  }
+  
+  button[name="btnAgregar"]:hover {
+    /* Estilos al pasar el mouse sobre el botón */
+    background-color: #1ed30e;
+    /* Color de fondo más oscuro */
+  }
+  
+  button[name="btnCloced"]:hover {
+    background-color: red;
+  }
+  
+  .ui-autocomplete {
+    z-index: 9999 !important;
+  }
