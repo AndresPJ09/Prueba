@@ -21,7 +21,7 @@ public class Ventas extends ABaseEntity{
 	private String total;
 	
 	@Column(name = "fecha_venta", nullable = false)
-	private Date date;
+	private Date fecha_venta;
 
 	public Clientes getClientes() {
 		return clientes;
@@ -39,13 +39,15 @@ public class Ventas extends ABaseEntity{
 		this.total = total;
 	}
 
-	public Date getDate() {
-		return date;
+	public Date getFecha_venta() {
+		return fecha_venta;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setFecha_venta(Date fecha_venta) {
+		this.fecha_venta = fecha_venta;
 	}
+
+
 	
 
 }

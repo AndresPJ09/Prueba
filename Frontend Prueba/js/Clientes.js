@@ -30,7 +30,7 @@ function save() {
                 loadData();
             },
             error: function (error) {
-                alert(`El cliente con identificación: ${$("#document").val()} ya existe`);
+                alert(`El cliente con identificación: ${$("#identificacion").val()} ya existe`);
             },
         });
     } catch (error) {
@@ -83,46 +83,64 @@ function loadDireccion() {
 }
 
 
-function loadData() {
-    
+function loadData(nameFilter = '', cityFilter = '', statusFilter = '') {
     console.log("ejecutando loadData");
     $.ajax({
-        url: "http://localhost:9000/prueba/v1/api/clientes",
+        url: `http://localhost:9000/prueba/v1/api/clientes?name=${encodeURIComponent(nameFilter)}&city=${encodeURIComponent(cityFilter)}&status=${encodeURIComponent(statusFilter)}`,
+
         method: "GET",
         dataType: "json",
         success: function (response) {
-            console.log(response.data);
+            console.log("Respuesta completa:", response);
+            console.log("Datos recibidos:", response.data);
+        
+        
             var html = "";
             var data = response.data;
             data.forEach(function (item) {
-                // Construir el HTML para cada objeto
-                if (!item.deletedAt) { // Verificar si el campo deletedAt es nulo (no eliminado lógicamente)
-
-                    html +=
-                        `<tr>
-                    <td>${item.tipoIdentificacion}</td>
-                    <td>` + item.identificacion + `</td>
-                    <td>` + item.nombre_cliente + `</td>
-                    <td>` + item.apellido_cliente + `</td>
-                    <td>` + item.telefono + `</td>
-                    <td>` + item.direccion + `</td>
-                    <td>` + item.ciudad + `</td>
-                    <td>` + (item.state == true ? "Activo" : "Inactivo") + `</td>
-                    <td> <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="findById(${item.id})"> <img src="../assets/icon/pencil-square.svg" > </button>
-                    <button type="button" class="btn btn-secundary" onclick="deleteById(${item.id})"> <img src="../assets/icon/trash3.svg" > </button></td>
-                </tr>`;
-
-                };
+                if (!item.deletedAt) {
+                    html += `<tr>
+                        <td>${item.tipoIdentificacion}</td>
+                        <td>${item.identificacion}</td>
+                        <td>${item.nombre_cliente}</td>
+                        <td>${item.apellido_cliente}</td>
+                        <td>${item.telefono}</td>
+                        <td>${item.direccion}</td>
+                        <td>${item.ciudad}</td>
+                        <td>${item.state ? "Activo" : "Inactivo"}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="findById(${item.id})">
+                                <img src="../icon/pencil-square.svg">
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="deleteById(${item.id})">
+                                <img src="../icon/trash3.svg">
+                            </button>
+                        </td>
+                    </tr>`;
+                }
             });
-
             $("#resultData").html(html);
         },
         error: function (error) {
-            // Función que se ejecuta si hay un error en la solicitud
             console.error("Error en la solicitud:", error);
         },
     });
 }
+
+function applyFilters() {
+    const nameFilter = $('#nameFilter').val();
+    const cityFilter = $('#cityFilter').val();
+    const statusFilter = $('#statusFilter').val();
+    loadData(nameFilter, cityFilter, statusFilter);
+}
+
+function clearFilter() {
+    $('#nameFilter').val('');
+    $('#cityFilter').val('');
+    $('#statusFilter').val('');
+    loadData();  // Recarga los datos sin filtros
+}
+
 
 
 function findById(id) {
@@ -179,20 +197,47 @@ function update() {
             headers: {
                 "Content-Type": "application/json",
             },
-        }).done(function (result) {
-            alert("Registro actualizado con éxito");
-            loadData();
-            clearData();
+            success: function (result) {
+                Swal.fire({
+                    title: 'Actualizado!',
+                    text: 'Registro actualizado con éxito',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                loadData();
+                clearData();
 
-            //actualzar boton
-            var btnAgregar = $('button[name="btnAgregar"]');
-            btnAgregar.text("Agregar");
-            btnAgregar.attr("onclick", "save()");
+                // Actualizar botón
+                var btnAgregar = $('button[name="btnAgregar"]');
+                btnAgregar.text("Agregar");
+                btnAgregar.attr("onclick", "save()");
+            },
+            error: function (error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'No se pudo actualizar el registro',
+                    icon: 'error',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                console.error("Error en la solicitud:", error);
+                loadData();
+                clearData();
+                var btnAgregar = $('button[name="btnAgregar"]');
+                btnAgregar.text("Agregar");
+                btnAgregar.attr("onclick", "save()");
+            }
         });
     } catch (error) {
-        alert("Error en actualizar clientes.");
+        Swal.fire({
+            title: 'Error!',
+            text: 'Error en actualizar cliente.',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false
+        });
         console.error("Error en la solicitud:", error);
-        //actualzar boton
         loadData();
         clearData();
         var btnAgregar = $('button[name="btnAgregar"]');
@@ -203,24 +248,51 @@ function update() {
 
 
 function deleteById(id) {
-    // Mostrar una alerta de confirmación antes de proceder
-    if (confirm("¿Estás seguro de que quieres eliminar este registro?")) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "No podrás revertir esta acción!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
         $.ajax({
             url: "http://localhost:9000/prueba/v1/api/clientes/" + id,
             method: "delete",
             headers: {
                 "Content-Type": "application/json",
-            },
+            }
         }).done(function (result) {
-            alert("Registro eliminado con éxito");
-            loadData(); // Asegúrate de que esta función actualiza correctamente los datos en tu vista
+            Swal.fire({
+                title: 'Eliminado!',
+                text: 'El registro ha sido eliminado.',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false,
+            });
+            loadData();
         }).fail(function (error) {
-            alert("Error al eliminar el registro: " + error.statusText); // Manejo de error
+            Swal.fire({
+                title: 'Error!',
+                text: 'No se pudo eliminar el registro: ' + error.statusText,
+                icon: 'error',
+                timer: 1500,
+                showConfirmButton: false,
+            });
         });
-    } else {
-        // Si el usuario cancela, simplemente retornamos sin hacer nada
-        console.log("Operación cancelada por el usuario.");
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire({
+            title: 'Cancelado',
+            text: 'La operación de eliminación ha sido cancelada',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+        });
     }
+});
 }
 
 function clearData() {

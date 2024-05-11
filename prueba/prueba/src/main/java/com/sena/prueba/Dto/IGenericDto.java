@@ -4,6 +4,6 @@ public interface IGenericDto {
 	
 	Long getId();
 
-	Boolean getState();
+	String getState();
 
 }

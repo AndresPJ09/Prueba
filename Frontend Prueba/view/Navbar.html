@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de Control</title>
+<link rel="stylesheet" href="../assets/css/styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1 class="title">Shoes Store</h1> <!-- Added a class for styling -->
+            <a href="#" onclick="changeIframeSrc('Clientes.html')"><i class="bi bi-person-fill"></i> Clientes</a>
+            <a href="#" onclick="changeIframeSrc('Productos.html')"><i class="bi bi-cart"></i> Productos</a>
+            <a href="#" onclick="changeIframeSrc('Ventas.html')"><i class="bi bi-wallet-fill"></i> Ventas</a>
+        </div>
+        <div class="content">
+            <iframe id="contentFrame" src="Clientes.html" width="100%" height="100%"></iframe>
+        </div>
+    </div>
+    <script src="/js/Navbar.js"></script>
+</body>
+</html>
