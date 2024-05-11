@@ -29,9 +29,7 @@ function save() {
                 clearData();
                 loadData();
             },
-            error: function (error) {
-                alert(`El cliente con identificación: ${$("#identificacion").val()} ya existe`);
-            },
+           
         });
     } catch (error) {
         console.error("Error obteniendo el cliente:", error);
@@ -83,22 +81,26 @@ function loadDireccion() {
 }
 
 
-function loadData(nameFilter = '', cityFilter = '', statusFilter = '') {
-    console.log("ejecutando loadData");
-    $.ajax({
-        url: `http://localhost:9000/prueba/v1/api/clientes?name=${encodeURIComponent(nameFilter)}&city=${encodeURIComponent(cityFilter)}&status=${encodeURIComponent(statusFilter)}`,
+function loadData() {
+    var nombre = $("#filter_nombre").val().toLowerCase();
+    var ciudad = $("#filter_ciudad").val().toLowerCase();
+    var estado = $("#filter_estado").val(); // Aquí se obtiene el valor seleccionado del filtro
 
+    $.ajax({
+        url: `http://localhost:9000/prueba/v1/api/clientes`,
         method: "GET",
         dataType: "json",
         success: function (response) {
-            console.log("Respuesta completa:", response);
-            console.log("Datos recibidos:", response.data);
-        
-        
             var html = "";
             var data = response.data;
             data.forEach(function (item) {
-                if (!item.deletedAt) {
+                
+                var itemStateMatch = estado === "" || (estado === "1" && item.state) || (estado === "0" && !item.state);
+                
+                if (!item.deletedAt &&
+                    (nombre === "" || item.nombre_cliente.toLowerCase().includes(nombre)) &&
+                    (ciudad === "" || item.ciudad.toLowerCase().includes(ciudad)) &&
+                    itemStateMatch) { // Usar itemStateMatch aquí
                     html += `<tr>
                         <td>${item.tipoIdentificacion}</td>
                         <td>${item.identificacion}</td>
@@ -127,19 +129,15 @@ function loadData(nameFilter = '', cityFilter = '', statusFilter = '') {
     });
 }
 
-function applyFilters() {
-    const nameFilter = $('#nameFilter').val();
-    const cityFilter = $('#cityFilter').val();
-    const statusFilter = $('#statusFilter').val();
-    loadData(nameFilter, cityFilter, statusFilter);
+function clearFilter() {
+    // Limpiar los campos de filtro
+    $("#filter_nombre").val("");
+    $("#filter_ciudad").val("");
+    $("#filter_estado").val("");
+    loadData();
 }
 
-function clearFilter() {
-    $('#nameFilter').val('');
-    $('#cityFilter').val('');
-    $('#statusFilter').val('');
-    loadData();  // Recarga los datos sin filtros
-}
+
 
 
 
@@ -305,6 +303,8 @@ function clearData() {
     $("#direccion").val("");
     $("#ciudad").val("");
     $("#estado").val("");
+
+    
 }
 
 

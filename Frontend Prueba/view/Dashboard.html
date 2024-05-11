@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descripción de Ventas</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="metric clientes">
+            <h3>Clientes Registrados</h3>
+            <span id="numClientes">0</span>
+            <img src="icon/client-icon.png">
+        </div>
+        <div class="metric ventas">
+            <h3>Ventas Realizadas</h3>
+            <span id="numVentas">0</span>
+            <img src="icon/sales-icon.png">
+        </div>
+        <div class="metric productos">
+            <h3>Productos Registrados</h3>
+            <span id="numProductos">0</span>
+            <img src="icon/product-icon.png">
+        </div>
+        <div class="metric list">
+            <h3>Productos con Menor Stock</h3>
+            <table id="tablaMenorStock">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los datos se llenarán desde JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="dashboard.js"></script>
+</body>
+</html>

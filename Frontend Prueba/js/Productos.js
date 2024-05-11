@@ -1,7 +1,5 @@
 function save() {
-
     try {
-
         var productoData = {
             "nombreProducto": $("#nombre").val(),
             "descripcion": $("#descripcion").val(),
@@ -24,55 +22,95 @@ function save() {
                 var id = data.id;
                 console.log(data.data);
 
-                alert("Registro agregado con éxito");
-                clearData();
-                loadData();
+                Swal.fire({
+                    title: '¡Guardado!',
+                    text: 'Registro agregado con éxito',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    clearData();
+                    loadData();
+                });
             },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    title: '¡Error al guardar!',
+                    text: 'No se pudo guardar el registro',
+                    icon: 'error',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            }
         });
     } catch (error) {
         console.error("Error obteniendo el producto:", error);
+        Swal.fire({
+            title: '¡Error interno!',
+            text: 'Se produjo un error al procesar la solicitud',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false
+        });
     }
 }
 
 
-function loadData() {
 
+function loadData() {
     console.log("ejecutando loadData");
+    var filterNombre = $('#filter_nombre').val().toLowerCase(); // convertir a minúsculas para la comparación
+    var filterEstado = $('#filter_estado').val();
+
     $.ajax({
         url: "http://localhost:9000/prueba/v1/api/productos",
         method: "GET",
+        data: {
+            nombre: filterNombre,
+            estado: filterEstado
+        },
         dataType: "json",
         success: function (response) {
             console.log(response.data);
             var html = "";
             var data = response.data;
             data.forEach(function (item) {
-                // Construir el HTML para cada objeto
-                if (!item.deletedAt) { // Verificar si el campo deletedAt es nulo (no eliminado lógicamente)
+                // Comprobación del estado con 'filterEstado'
+                var itemStateMatch = filterEstado === "" || (filterEstado === "1" && item.state) || (filterEstado === "0" && !item.state);
 
-                    html +=
-                        `<tr>
-                    <td>${item.nombreProducto}</td>
-                    <td>` + item.descripcion + `</td>
-                    <td>` + item.cantidad + `</td>
-                    <td>${item.porcentajeIva}%</td> <!-- Añadir signo % aquí -->
-                    <td>${item.procentajeDescento}%</td>
-                    <td>` + (item.state == true ? "Activo" : "Inactivo") + `</td>
-                    <td> <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="findById(${item.id})"> <img src="../icon/pencil-square.svg" > </button>
-                    <button type="button" class="btn btn-secundary" onclick="deleteById(${item.id})"> <img src="../icon/trash3.svg" > </button></td>
-                </tr>`;
-
-                };
+                // Revisar si 'item.nombreProducto' existe y si se cumple la condición de filtrado
+                if (!item.deletedAt && (filterNombre === "" || (item.nombreProducto && item.nombreProducto.toLowerCase().includes(filterNombre))) && itemStateMatch) {
+                    html += `<tr>
+                        <td>${item.nombreProducto}</td>
+                        <td>${item.descripcion}</td>
+                        <td>${item.cantidad}</td>
+                        <td>${item.porcentajeIva}%</td>
+                        <td>${item.procentajeDescento}%</td>
+                        <td>${item.state ? "Activo" : "Inactivo"}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="findById(${item.id})">
+                                <img src="../icon/pencil-square.svg"></button>
+                            <button type="button" class="btn btn-secondary" onclick="deleteById(${item.id})">
+                                <img src="../icon/trash3.svg"></button>
+                        </td>
+                    </tr>`;
+                }
             });
-
             $("#resultData").html(html);
         },
         error: function (error) {
-            // Función que se ejecuta si hay un error en la solicitud
             console.error("Error en la solicitud:", error);
         },
     });
 }
+
+
+function clearFilter() {
+    $("#filter_nombre").val("");
+    $("#filter_estado").val("");
+    loadData();
+}
+
 
 
 function findById(id) {

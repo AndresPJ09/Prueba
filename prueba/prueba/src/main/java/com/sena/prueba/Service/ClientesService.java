@@ -33,5 +33,10 @@ public class ClientesService extends ABaseService<Clientes> implements IClientes
 	public List<Clientes> findByNombreAndCiudadAndState(String nombre_cliente, String ciudad, Boolean state) {
 	    return repository.findByNombreAndCiudadAndState(nombre_cliente, ciudad, state);
 	}
+	
+	  @Override
+	    public void delete(Long id){
+	        repository.deleteById(id);
+	    }
 
 }

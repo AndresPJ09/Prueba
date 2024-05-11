@@ -15,10 +15,10 @@ function save() {
 
     try {
         var data = {
-            "venta": {
+            "ventas": {
                 "id": selectVentaId
             },
-            "producto": {
+            "productos": {
                 "id": selectProductoId
             },
             "cantidad": $("#cantidad").val(),
@@ -29,14 +29,14 @@ function save() {
 
         };
 
-        console.log(ventaData);
+        console.log(DescripcionVentasData);
 
         $.ajax({
             url: "http://localhost:9000/prueba/v1/api/descripcion_ventas",
             method: "POST",
             dataType: "json",
             contentType: "application/json",
-            data: JSON.stringify(ventaData),
+            data: JSON.stringify(DescripcionVentasData),
             success: function (data) {
                 var id = data.id;
                 console.log(data.data);
@@ -68,8 +68,8 @@ function loadData() {
 
                     html +=
                         `<tr>
-                    <td>${item.cliente.name +''+ cliente.apellido}</td>
-                    <td>` + item.producto.nombreProducto + `</td>
+                    <td>${item.clientes.nombre_cliente +''+ clientes.nombre_apellido}</td>
+                    <td>` + item.productos.nombreProducto + `</td>
                     <td>` + item.cantidad + `</td>
                     <td>` + item.precio + `</td>
                     <td>` + item.decuento + `</td>
@@ -99,16 +99,16 @@ function loadVentas() {
         dataType: "json",
         success: function(response) {
             if (response.status && Array.isArray(response.data)) {
-                var ventas = response.data.map(function(venta) {
+                var ventass = response.data.map(function(ventas) {
                     return {
-                        label: venta.cliente.nombre_cliente+ " " +venta.cliente.apellido_cliente,
-                        value: venta.id
+                        label: ventas.clientes.nombre_cliente+ " " +ventas.clientes.apellido_cliente,
+                        value: ventas.id
                     };
                 });
   
                 // Inicializar el autocompletado en el campo de entrada de texto
                 $("#venta_id").autocomplete({
-                    source: ventas,
+                    source: ventass,
                     select: function(event, ui) {
                         // Al seleccionar un elemento del autocompletado, guarda el ID en un campo oculto
                         $("#selected_venta_id").val(ui.item.value);
@@ -136,16 +136,16 @@ function loadVentas() {
         dataType: "json",
         success: function(response) {
             if (response.status && Array.isArray(response.data)) {
-                var productos = response.data.map(function(producto) {
+                var productoss = response.data.map(function(productos) {
                     return {
-                        label: producto.nombre_producto,
-                        value: producto.id
+                        label: productos.nombreProducto,
+                        value: productos.id
                     };
                 });
   
                 // Inicializar el autocompletado en el campo de entrada de texto
                 $("#producto_id").autocomplete({
-                    source: productos,
+                    source: productoss,
                     select: function(event, ui) {
                         // Al seleccionar un elemento del autocompletado, guarda el ID en un campo oculto
                         $("#selected_producto_id").val(ui.item.value);
@@ -174,10 +174,10 @@ function findById(id) {
         success: function (response) {
             var data = response.data;
             $("#id").val(data.id);
-            $("#venta_id").val(data.venta.cliente.nombre_cliente+" "+data.venta.cliente.apellido_cliente);
+            $("#venta_id").val(data.ventas.clientes.nombre_cliente+" "+data.ventas.clientes.apellido_cliente);
             $("#selected_venta_id").val(data.venta.id);
-            $("#producto_id").val(data.producto.cliente.nombre_producto);
-            $("#selected_producto_id").val(data.producto.id);
+            $("#producto_id").val(data.productos.nombreProducto);
+            $("#selected_producto_id").val(data.productos.id);
             $('#cantidad').val(data.cantidad);
             $('#precio').val(data.precio);
             $('#descuento').val(data.descuento);
@@ -213,10 +213,10 @@ function update() {
 
     try {
         var data = {
-            "venta": {
+            "ventas": {
                 "id": selectVentaId
             },
-            "producto": {
+            "productos": {
                 "id": selectProductoId
             },
             "cantidad": $("#cantidad").val(),

@@ -1,8 +1,14 @@
 function save() {
-
     var selecClienteId = parseInt($("#selected_cliente_id").val());
     if (isNaN(selecClienteId) || selecClienteId === null) {
         console.error("ID de cliente no válido");
+        Swal.fire({
+            title: 'Error!',
+            text: 'ID de cliente no válido',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false
+        });
         return;
     }
 
@@ -14,7 +20,6 @@ function save() {
             "total": $("#total").val(),
             "fecha_venta": $("#fecha_venta").val(),
             'state': parseInt($('#estado').val())
-
         };
 
         console.log(ventaData);
@@ -29,13 +34,36 @@ function save() {
                 var id = data.id;
                 console.log(data.data);
 
-                alert("Registro agregado con éxito");
-                clearData();
-                loadData();
+                Swal.fire({
+                    title: '¡Guardado!',
+                    text: 'Registro agregado con éxito',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    clearData();
+                    loadData();
+                });
             },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    title: '¡Error al guardar!',
+                    text: 'No se pudo guardar el registro',
+                    icon: 'error',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            }
         });
     } catch (error) {
         console.error("Error obteniendo el ventas:", error);
+        Swal.fire({
+            title: '¡Error interno!',
+            text: 'Se produjo un error al procesar la solicitud',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false
+        });
     }
 }
 
@@ -56,9 +84,8 @@ function loadData() {
 
                     html +=
                         `<tr>
-                    <td>${item.clientes.name +''+ item.clientes.apellido}</td>
+                    <td>${item.clientes.nombre_cliente +''+ item.clientes.apellido_cliente}</td>
                     <td>` + item.total + `</td>
-                    <td>` + item.cantidad + `</td>
                     <td>` + item.fecha_venta + `</td>
                     <td>` + (item.state == true ? "Activo" : "Inactivo") + `</td>
                     <td> <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="findById(${item.id})"> <img src="../icon/pencil-square.svg" > </button>
@@ -78,14 +105,14 @@ function loadData() {
 }
 
 
-function loadCliente() {
+function loadClientes() {
     $.ajax({
         url: "http://localhost:9000/prueba/v1/api/clientes",
         method: "GET",
         dataType: "json",
         success: function(response) {
             if (response.status && Array.isArray(response.data)) {
-                var clientes = response.data.map(function(clientes) {
+                var clientess = response.data.map(function(clientes) {
                     return {
                         label: clientes.nombre_cliente+ " " +clientes.apellido_cliente,
                         value: clientes.id
@@ -94,13 +121,13 @@ function loadCliente() {
   
                 // Inicializar el autocompletado en el campo de entrada de texto
                 $("#cliente_id").autocomplete({
-                    source: clientes,
+                    source: clientess,
                     select: function(event, ui) {
                         // Al seleccionar un elemento del autocompletado, guarda el ID en un campo oculto
                         $("#selected_cliente_id").val(ui.item.value);
-                        // Actualiza el valor del campo de entrada con el nombre de la clientea seleccionada
+                        // Actualiza el valor del campo de entrada con el nombre de la cliente seleccionada
                         $("#cliente_id").val(ui.item.label);
-                        console.log("ID de clientea seleccionada: " + ui.item.value);
+                        console.log("ID de cliente seleccionada: " + ui.item.value);
                         return false; // Evita la propagación del evento y el formulario de envío
                     }
                 });

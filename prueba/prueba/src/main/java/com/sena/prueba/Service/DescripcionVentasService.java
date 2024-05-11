@@ -19,7 +19,11 @@ public class DescripcionVentasService extends ABaseService<DescripcionVentas> im
 		// TODO Auto-generated method stub
 		return repository;
 	}
-
+	
+	  @Override
+	    public void delete(Long id){
+	        repository.deleteById(id);
+	    }
 
 
 }

@@ -19,5 +19,10 @@ public class ProductosService extends ABaseService<Productos> implements IProduc
 		// TODO Auto-generated method stub
 		return repository;
 	}
+	
+	  @Override
+	    public void delete(Long id){
+	        repository.deleteById(id);
+	    }
 
 }

@@ -23,10 +23,8 @@ public interface IClientesRepository extends IBaseRepository<Clientes, Long>{
 	List<IClientesDto> getTypoIdentificacion(@Param("tipo") String tipo);
       
 	@Query("SELECT c FROM Clientes c WHERE "
-		       + "(:nombre_cliente IS NULL OR c.nombre_cliente LIKE %:nombre_cliente%) "
-		       + "AND (:ciudad IS NULL OR c.ciudad = :ciudad) "
-		       + "AND (:state IS NULL OR c.state = :state)")
-		List<Clientes> findByNombreAndCiudadAndState(String nombre_cliente, String ciudad, Boolean state);
-
-
+ 	       + "(:nombre_cliente IS NULL OR c.nombre_cliente = :nombre_cliente) "
+ 	       + "AND (:ciudad IS NULL OR c.ciudad = :ciudad) "
+ 	       + "AND (:state IS NULL OR c.state = :state)")
+    List<Clientes> findByNombreAndCiudadAndState(String nombre_cliente, String ciudad, Boolean state);
 }

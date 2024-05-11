@@ -19,5 +19,10 @@ public class VentasService extends ABaseService<Ventas> implements IVentasServic
 		// TODO Auto-generated method stub
 		return repository;
 	}
+	
+	  @Override
+	    public void delete(Long id){
+	        repository.deleteById(id);
+	    }
 
 }

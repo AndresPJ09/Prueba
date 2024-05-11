@@ -109,4 +109,99 @@ iframe {
     border: none;
 }
 
+.spinner-border {
+  display: inline-block;
+  width: 3rem;
+  height: 3rem;
+  vertical-align: text-bottom;
+  border: 0.25em solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-border 0.75s linear infinite;
+}
+
+@keyframes spinner-border {
+  to { transform: rotate(360deg); }
+}
+
   /*NAVBARFIN*/
+
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.dashboard-container {
+    display: flex;
+    flex-direction: column; /* Orientación vertical para el contenedor principal */
+    align-items: center;
+    padding: 20px;
+}
+
+.metrics-row {
+    display: flex; /* Flexbox para la fila de métricas */
+    justify-content: space-between; /* Distribuye el espacio uniformemente */
+    width: 100%; /* Asegura que tome todo el ancho disponible */
+    max-width: 1200px; /* Máximo ancho de la fila */
+    margin-bottom: 20px; /* Espacio entre la fila de métricas y la tabla */
+}
+
+.metric {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin: 10px;
+    border-radius: 10px;
+    width: calc(33.333% - 22px); /* Divide el espacio por tres y ajusta según el margen */
+    box-shadow: 2px 2px 10px #ccc;
+    color: white;
+}
+
+.clientes {
+    background-color: #007BFF; /* Azul */
+}
+
+.ventas {
+    background-color: #28A745; /* Verde */
+}
+
+.productos {
+    background-color: #DC3545; /* Rojo */
+}
+
+.metric img {
+    width: 50px;
+    margin-top: 10px;
+}
+
+.metric.list {
+    width: 100%;
+    max-width: 600px; /* Ajusta el ancho de la tabla */
+    background-color: #6C757D; /* Gris */
+    color: black;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #343A40; /* Casi negro */
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
